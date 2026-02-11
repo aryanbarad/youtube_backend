@@ -319,6 +319,108 @@ const updateAccountDetails = asyncHandeler(async (req, res) => {
         .json(new ApiResponse(200, user, "account details updated successfully"))
 })
 
+const updateAvatar = asyncHandeler(async (req, res) => {
+    const avatarLocalPath = req.file?.path
+
+    if (!avatarLocalPath) {
+    throw new ApiError(400, "avatar file is missing")
+}
+
+
+  await User.findByIdAndDelete(req.params._id,)
+
+const avatar = await uploadCloudinary(avatarLocalPath)
+
+if (!avatar.url) {
+    throw new ApiError(500, "something went wrong while uploading avatar")
+}
+
+User.findByIdAndUpdate(
+    req.user?._id,
+    {
+        $set: {
+            avatar: avatar.url
+        },
+
+    },
+    {
+        new: true
+    }
+).select("-password")
+
+return res
+    .status(200)
+    .json(new ApiResponse(200, user, "avatar updated successfully"))
+})
+
+
+const updateUserCoverImage = asyncHandeler(async (req,res)=>{
+
+    const coverImageLocalPath = req.file?.path
+
+    if(!coverImageLocalPath){
+        throw new ApiError(400,"cover image file is missing")
+    }
+
+         await User.findByIdAndDelete(req.params._id)
+
+
+        const coverImage = await uploadCloudinary(coverImageLocalPath)
+
+        if(!coverImage.url){
+            throw new ApiError(500,"something went wrong while uploading cover image")
+        }
+
+        User.findByIdAndUpdate(req.user?._id,
+            {
+                $set:{
+                    coverImage:coverImage.url
+                }
+            },
+            {
+                new :true
+            }
+        ).select("-password")
+
+
+        return res
+        .status(200)
+        .json(new ApiResponse(200, user, "cover image updated successfully"))
+
+})
+
+
+const getUserChannelProfile  =asyncHandeler(async (req,res)=>{
+    const {username} = req.params
+
+    if(!username?.trim()){
+        throw new ApiError(400,"username is required")
+    }
+
+    User.aggregate([
+        {
+            $match:{
+                username:username.toLowerCase()
+            }
+        },
+        {
+            $lookup:{
+                from:''
+            }
+        }
+    ])
+})
+
+
+
+
+
+
+
+
+
+
+
 
 export {
     registerUser,
@@ -327,5 +429,6 @@ export {
     refreshAccessToken,
     changeCurrentPassword,
     getCurrentUser,
-    updateAccountDetails
+    updateAccountDetails,
+    updateAvatar
 }
