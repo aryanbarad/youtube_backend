@@ -405,9 +405,78 @@ const getUserChannelProfile  =asyncHandeler(async (req,res)=>{
         },
         {
             $lookup:{
-                from:''
+                from:"subscriptions",
+                localField:"_id",
+                foreignField:"channel",
+                as:"subscribers"
+
+            }
+        },
+        {
+            $lookup:{
+                from:"subscriptions",
+                localField:"_id",
+                foreignField:"subscriber",
+                as:"subscribedChannels"
+            }
+        },
+        {
+            $addFields:{
+                subscribersCount:{
+                    $size:"$subscribers",
+                },
+                subscribedChannelsCount:{
+                    $size:"$subcribedChannels"
+                },
+                isSubscribed:{
+                    $cond:{
+                        if:{$in:[req.user?._id,"$subscribers.subscriber"]},
+                        then:true,
+                        else:false
+                    }
+                }
+            }
+        },
+        {
+            $project:{
+                fullName:1,
+                username:1,
+                subscribersCount:1,
+                subscribedChannelsCount:1,
+                isSubscribed:1,
+                avatar:1,
+                coverImage:1,
+                email:1
             }
         }
+    ])
+
+    if(!channel?.length){
+        throw new ApiError(404,"channel not found")
+    }
+
+    return res
+    .status(200)
+    .json(new ApiResponse(200,channel[0],"channel profile fetched successfully"))
+
+})
+
+const getWatchHistory = asyncHanseler(async (req, res)=>{
+
+   const user= await User.aggregate([
+        {
+           $match:{
+            _id: new mongoose.Types.ObjectId(req.user._id)
+        }
+    },
+    {
+        $lookup:{
+            from:"videos",
+            localField:"watchHistory",
+            foreignField:"_id",
+            as:"watchHistory"
+        }
+    }
     ])
 })
 
@@ -430,5 +499,9 @@ export {
     changeCurrentPassword,
     getCurrentUser,
     updateAccountDetails,
-    updateAvatar
+    updateAvatar,
+    updateUserCoverImage,
+    getUserChannelProfile,
+    getWatchHistory
+
 }
