@@ -323,161 +323,200 @@ const updateAvatar = asyncHandeler(async (req, res) => {
     const avatarLocalPath = req.file?.path
 
     if (!avatarLocalPath) {
-    throw new ApiError(400, "avatar file is missing")
-}
-
-
-  await User.findByIdAndDelete(req.params._id,)
-
-const avatar = await uploadCloudinary(avatarLocalPath)
-
-if (!avatar.url) {
-    throw new ApiError(500, "something went wrong while uploading avatar")
-}
-
-User.findByIdAndUpdate(
-    req.user?._id,
-    {
-        $set: {
-            avatar: avatar.url
-        },
-
-    },
-    {
-        new: true
+        throw new ApiError(400, "avatar file is missing")
     }
-).select("-password")
 
-return res
-    .status(200)
-    .json(new ApiResponse(200, user, "avatar updated successfully"))
+
+    await User.findByIdAndDelete(req.params._id,)
+
+    const avatar = await uploadCloudinary(avatarLocalPath)
+
+    if (!avatar.url) {
+        throw new ApiError(500, "something went wrong while uploading avatar")
+    }
+
+    User.findByIdAndUpdate(
+        req.user?._id,
+        {
+            $set: {
+                avatar: avatar.url
+            },
+
+        },
+        {
+            new: true
+        }
+    ).select("-password")
+
+    return res
+        .status(200)
+        .json(new ApiResponse(200, user, "avatar updated successfully"))
 })
 
 
-const updateUserCoverImage = asyncHandeler(async (req,res)=>{
+const updateUserCoverImage = asyncHandeler(async (req, res) => {
 
     const coverImageLocalPath = req.file?.path
 
-    if(!coverImageLocalPath){
-        throw new ApiError(400,"cover image file is missing")
+    if (!coverImageLocalPath) {
+        throw new ApiError(400, "cover image file is missing")
     }
 
-         await User.findByIdAndDelete(req.params._id)
+    await User.findByIdAndDelete(req.params._id)
 
 
-        const coverImage = await uploadCloudinary(coverImageLocalPath)
+    const coverImage = await uploadCloudinary(coverImageLocalPath)
 
-        if(!coverImage.url){
-            throw new ApiError(500,"something went wrong while uploading cover image")
-        }
+    if (!coverImage.url) {
+        throw new ApiError(500, "something went wrong while uploading cover image")
+    }
 
-        User.findByIdAndUpdate(req.user?._id,
-            {
-                $set:{
-                    coverImage:coverImage.url
-                }
-            },
-            {
-                new :true
+    User.findByIdAndUpdate(req.user?._id,
+        {
+            $set: {
+                coverImage: coverImage.url
             }
-        ).select("-password")
+        },
+        {
+            new: true
+        }
+    ).select("-password")
 
 
-        return res
+    return res
         .status(200)
         .json(new ApiResponse(200, user, "cover image updated successfully"))
 
 })
 
 
-const getUserChannelProfile  =asyncHandeler(async (req,res)=>{
-    const {username} = req.params
+const getUserChannelProfile = asyncHandeler(async (req, res) => {
+    const { username } = req.params
 
-    if(!username?.trim()){
-        throw new ApiError(400,"username is required")
+    if (!username?.trim()) {
+        throw new ApiError(400, "username is required")
     }
 
     User.aggregate([
         {
-            $match:{
-                username:username.toLowerCase()
+            $match: {
+                username: username.toLowerCase()
             }
         },
         {
-            $lookup:{
-                from:"subscriptions",
-                localField:"_id",
-                foreignField:"channel",
-                as:"subscribers"
+            $lookup: {
+                from: "subscriptions",
+                localField: "_id",
+                foreignField: "channel",
+                as: "subscribers"
 
             }
         },
         {
-            $lookup:{
-                from:"subscriptions",
-                localField:"_id",
-                foreignField:"subscriber",
-                as:"subscribedChannels"
+            $lookup: {
+                from: "subscriptions",
+                localField: "_id",
+                foreignField: "subscriber",
+                as: "subscribedChannels"
             }
         },
         {
-            $addFields:{
-                subscribersCount:{
-                    $size:"$subscribers",
+            $addFields: {
+                subscribersCount: {
+                    $size: "$subscribers",
                 },
-                subscribedChannelsCount:{
-                    $size:"$subcribedChannels"
+                subscribedChannelsCount: {
+                    $size: "$subcribedChannels"
                 },
-                isSubscribed:{
-                    $cond:{
-                        if:{$in:[req.user?._id,"$subscribers.subscriber"]},
-                        then:true,
-                        else:false
+                isSubscribed: {
+                    $cond: {
+                        if: { $in: [req.user?._id, "$subscribers.subscriber"] },
+                        then: true,
+                        else: false
                     }
                 }
             }
         },
         {
-            $project:{
-                fullName:1,
-                username:1,
-                subscribersCount:1,
-                subscribedChannelsCount:1,
-                isSubscribed:1,
-                avatar:1,
-                coverImage:1,
-                email:1
+            $project: {
+                fullName: 1,
+                username: 1,
+                subscribersCount: 1,
+                subscribedChannelsCount: 1,
+                isSubscribed: 1,
+                avatar: 1,
+                coverImage: 1,
+                email: 1
             }
         }
     ])
 
-    if(!channel?.length){
-        throw new ApiError(404,"channel not found")
+    if (!channel?.length) {
+        throw new ApiError(404, "channel not found")
     }
 
     return res
-    .status(200)
-    .json(new ApiResponse(200,channel[0],"channel profile fetched successfully"))
+        .status(200)
+        .json(new ApiResponse(200, channel[0], "channel profile fetched successfully"))
 
 })
 
-const getWatchHistory = asyncHanseler(async (req, res)=>{
+const getWatchHistory = asyncHanseler(async (req, res) => {
 
-   const user= await User.aggregate([
+    const user = await User.aggregate([
         {
-           $match:{
-            _id: new mongoose.Types.ObjectId(req.user._id)
+            $match: {
+                _id: new mongoose.Types.ObjectId(req.user._id)
+            }
+        },
+        {
+            $lookup: {
+                from: "videos",
+                localField: "watchHistory",
+                foreignField: "_id",
+                as: "watchHistory",
+                pipeline: [
+                    {
+                        $lookup: {
+                            from: "videos",
+                            localField: "watchHistory",
+                            foreignField: "_id",
+                            as: "watchHistory",
+                            pipeline: [
+                                {
+                                    $lookup: {
+                                        from: "users",
+                                        localField: "owner",
+                                        foreignField: "_id",
+                                        as: "owner",
+                                        pipeline: [
+                                            {
+                                                $project: {
+                                                    fullName: 1,
+                                                    username: 1,
+                                                     avatar: 1
+                                                }
+                                            },
+                                            {
+                                                $addFields:{
+                                                    owner:{$first:"$owner"}
+                                                }
+                                            }
+                                        ]
+                                    }
+                                },
+
+                            ]
+                        }
+                    }
+                ]
+            }
         }
-    },
-    {
-        $lookup:{
-            from:"videos",
-            localField:"watchHistory",
-            foreignField:"_id",
-            as:"watchHistory"
-        }
-    }
     ])
+
+    return res
+        .status(200)
+        .json(new ApiResponse(200,user[0].watchHistory,"watch history fetched successfully"))
 })
 
 
