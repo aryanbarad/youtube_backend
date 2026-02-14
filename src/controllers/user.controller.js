@@ -461,7 +461,7 @@ const getUserChannelProfile = asyncHandeler(async (req, res) => {
 
 })
 
-const getWatchHistory = asyncHanseler(async (req, res) => {
+const getWatchHistory = asyncHandeler(async (req, res) => {
 
     const user = await User.aggregate([
         {
@@ -518,16 +518,6 @@ const getWatchHistory = asyncHanseler(async (req, res) => {
         .status(200)
         .json(new ApiResponse(200,user[0].watchHistory,"watch history fetched successfully"))
 })
-
-
-
-
-
-
-
-
-
-
 
 
 export {
