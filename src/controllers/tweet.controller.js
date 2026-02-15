@@ -1,8 +1,9 @@
 import mongoose, { isValidObjectId } from "mongoose";
 import { Tweet } from "../models/tweet.model.js";
-import { User } from "../models/user.model.js";
 import { asyncHandeler } from "../utils/asyncHandler.js";
 import { ApiResponse } from "../utils/ApiResponse.js";
+import { User } from "../models/user.model.js";
+import { ApiError } from "../utils/ApiError.js";
 
 
 
@@ -11,7 +12,7 @@ const createTweet = asyncHandeler(async (req, res) => {
    const { content } = req.body
 
    if (!content || content.trim() === "") {
-      return new ApiResponse(400, "content is rerquired")
+      return new ApiError(400, "content is rerquired")
    }
    const newTweet = await Tweet.create(
       {
@@ -22,7 +23,7 @@ const createTweet = asyncHandeler(async (req, res) => {
 
 
    if (!newTweet) {
-      throw new ApiResponse(500, "couldn't create tweet")
+      throw new ApiError(500, "couldn't create tweet")
    }
 
    const populatedTweet = await newTweet.populate("owner", "name username profilePicture")
@@ -98,7 +99,7 @@ const updateTweet = asyncHandeler(async (req, res) => {
    const userId = req.user?._id
 
    if (!content || content.trim() === "") {
-      throw new ApiResponse(400, "content is required")
+      throw new ApiError(400, "content is required")
    }
 
    const editwTeet = await Tweet.findOneAndUpdate(
@@ -118,7 +119,7 @@ const updateTweet = asyncHandeler(async (req, res) => {
       } )
 
       if(!editwTeet){
-         throw new ApiResponse(404,"tweet not found or user not authorized to edit this tweet")
+         throw new ApiError(404,"tweet not found or user not authorized to edit this tweet")
       }
 
       return res
@@ -128,6 +129,27 @@ const updateTweet = asyncHandeler(async (req, res) => {
 })
 
 
+const deleteTweet = asyncHandeler(async(req,res)=>{
+   const {tweetId} = req.params
+   const userId =req.user?._id
+   
+   const deletedTeet = await Tweet.findOneAndDelete({
+      
+      _id: new mongoose.Types.ObjectId(tweetId),
+      owner : new mongoose.Types.ObjectId(userId)
+   })
+
+
+   if(!deletedTeet){
+      throw  new ApiError(404, "tweet not found or user not authorized to delete this tweet")
+
+   }
+  
+   return res
+   .status(200)
+   .json(new ApiResponse(200, deletedTeet, "tweet deleted successfully"))
+
+})
 
 
 
@@ -138,5 +160,6 @@ const updateTweet = asyncHandeler(async (req, res) => {
 export {
    createTweet,
    getUserTweets,
-   updateTweet
+   updateTweet,
+   deleteTweet
 }
