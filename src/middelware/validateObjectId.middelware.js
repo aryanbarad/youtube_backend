@@ -1,8 +1,12 @@
 import mongoose from "mongoose";
 import { ApiError } from "../utils/ApiError.js";
+import { asyncHandeler } from "../utils/asyncHandler.js";
 
 
-const checkValidateObjectId = (id) => (req, res, next) => {
+export const checkValidateObjectId = asyncHandeler(async(req,res,next)=>{
+   
+   
+   
     const inValid = id.find(id => !mongoose.isValidObjectId(req.params[id]))
 
 
@@ -12,14 +16,7 @@ const checkValidateObjectId = (id) => (req, res, next) => {
 
 
     next();
-
-
-
-}
-
-export {
-    checkValidateObjectId
-}
+})
 
 
 
