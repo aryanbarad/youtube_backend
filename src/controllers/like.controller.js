@@ -22,7 +22,7 @@ const {videoId} = req.params
     }
 
 
-    const existingLike = await Like.find({
+    const existingLike = await Like.findOne({
         video: videoId,
         likedBy:req.user?._id
     })
@@ -36,14 +36,14 @@ const {videoId} = req.params
         .json(new ApiResponse(200,{isLiked:false},"video unlike successfully"))
     } else {
         //Like:crate a new like
-        await Like.create({
+        const like = await Like.create({
             video:videoId,
             likedBy:req.user?._id
         }) 
 
         return res 
         .status(200)
-        .json(new ApiResponse(200,{isLiked:true,Like},"video liked successfully"))
+        .json(new ApiResponse(200,{isLiked:true,like},"video liked successfully"))
     }
 })
 
@@ -65,21 +65,21 @@ const ToggeleCommentLike = asyncHandeler(async(req,res)=>{
 
     const existinglike = await Like.findOne({
         comment:commentId,
-        likedBy:req.user._id
+        likedBy:req.user?._id
     })
 
     if (existinglike) {
         //unlike: remove the like
-        await Like.findByIdAndDelete(existinglike._id)
+        await Like.findByIdAndDelete(existinglike?._id)
         return res
         .status(200)
         .json(new ApiResponse(200,{isLiked:false},"comment unliked succesfully"))
     } else {
         //like: create a new like 
-        const Like = await Like.create({
+        const like = await Like.create({
 
             comment:commentId,
-            likedBy:res.user?._id
+            likedBy:req.user?._id
         })
 
         return res
@@ -114,7 +114,7 @@ const ToggleTweetLike = asyncHandeler(async(req,res)=>{
 
     if(existingLike){
         //unlike: remove  the like 
-        await Like.findByIdAndDelete(existingLike._id)
+        await Like.findByIdAndDelete(existingLike?._id)
 
         return res
         .status(200)
@@ -141,7 +141,7 @@ const getlikedvideo = asyncHandeler(async(req,res)=>{
         video:{$exists:true}
     }).populate({
         path:"video",
-        pipulate:{
+        populate:{
             path:"owner",
             select:"username fullName avatar"
         }
@@ -151,8 +151,8 @@ const getlikedvideo = asyncHandeler(async(req,res)=>{
 
 //filter out any null video (incase video is deleted)
 
-const likeVideos = likes
-    .filter(like=> like.vidoe !== null)
+const likeVideos = like
+    .filter(like=> like.video !== null)
     .map(like => like.video)
 
 return res
