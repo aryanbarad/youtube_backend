@@ -1,11 +1,11 @@
 import { ApiError } from "../utils/ApiError.js";
-import { asyncHandeler } from "../utils/asyncHandler.js";
+import { asyncHandler } from "../utils/asyncHandler.js";
 import { ApiResponse } from "../utils/ApiResponse.js";
 import { uploadCloudinary } from "../utils/cloudinary.js";
 import { Video } from "../models/video.model.js";
 import { User } from "../models/user.model.js";
 import mongoose, { isValidObjectId } from "mongoose";
-import { getWatchHistory } from "../controllers/user.controller.js";
+
 
 
 
@@ -18,12 +18,12 @@ import { getWatchHistory } from "../controllers/user.controller.js";
 //4. Populate owner information
 //5. Return paginated comments
 
-const getAllVideo = asyncHandeler(async (req, res) => {
+const getAllVideo = asyncHandler(async (req, res) => {
     const { page = 1, limit = 10, query, sortBy, sortType, userId } = req.query
     const { videoId } = req.params
     // build match pipeline for filtering 
     const matchStage = {
-        isPublic: true
+        isPublished: true
     }
 
     // add userId filter if provideed
@@ -100,14 +100,14 @@ const getAllVideo = asyncHandeler(async (req, res) => {
 })
 
 
-const publishVideo = asyncHandeler(async (req, res) => {
+const publishVideo = asyncHandler(async (req, res) => {
 
     const { title, description } = req.body
 
     if (!title || !description) {
         throw new ApiError(400, "title and description is required")
     }
-    
+
 
     const videoFileLocalPath = req.files?.videoFile?.[0]?.path
     const thumbnailFileLocalPath = req.files?.thumbnail?.[0]?.path
@@ -118,21 +118,21 @@ const publishVideo = asyncHandeler(async (req, res) => {
 
     //upload video file to cludinary
 
-    const VidoeFile = await uploadCloudinary(videoFileLocalPath)
+    const VideoFile = await uploadCloudinary(videoFileLocalPath)
 
-    if (!VidoeFile) {
+    if (!VideoFile) {
         throw new ApiError(500, "failed to upload video file")
     }
-    const thumbnailFile = await uploadCloudinary(thumbnailFile)
+    const thumbnailFile = await uploadCloudinary(thumbnailFileLocalPath)
 
     if (!thumbnailFile) {
         throw new ApiError(500, "failed to upload thumbnail file")
     }
 
-    const duration = VidoeFile.duration || 0
+    const duration = VideoFile.duration || 0
 
     const video = await Video.create({
-        videoFile: VidoeFile.url,
+        videoFile: VideoFile.url,
         thumbnail: thumbnailFile.url,
         title,
         description,
@@ -157,7 +157,7 @@ const publishVideo = asyncHandeler(async (req, res) => {
 
 
 
-const getVideoById = asyncHandeler(async (req, res) => {
+const getVideoById = asyncHandler(async (req, res) => {
     const { videoId } = req.params
 
 
@@ -185,7 +185,7 @@ const getVideoById = asyncHandeler(async (req, res) => {
         await User.findByIdAndUpdate(req.user._id,
             {
                 $addToSet: {
-                    WatchHistory: videoId
+                    watchHistory: videoId
                 }
             }
         )
@@ -202,7 +202,7 @@ const getVideoById = asyncHandeler(async (req, res) => {
 
 
 
-const updateVideo = asyncHandeler(async (req, res) => {
+const updateVideo = asyncHandler(async (req, res) => {
     const { videoId } = req.params
     const { title, description } = req.body
 
@@ -230,7 +230,7 @@ const updateVideo = asyncHandeler(async (req, res) => {
         updateFields.description = description
     }
 
-   if (req.files?.thumbnail?.[0]?.path) {
+    if (req.files?.thumbnail?.[0]?.path) {
         const thumbnailFile = await uploadCloudinary(req.files.thumbnail?.[0]?.path)
 
         if (!thumbnailFile) {
@@ -254,15 +254,15 @@ const updateVideo = asyncHandeler(async (req, res) => {
         .json(
             new ApiResponse(
                 200,
-                updateVideo,
-                "vidoe update successfully"
+                updatedVideo,
+                "video updated successfully"
             )
         )
 
 })
 
 
-const deleteVideo = asyncHandeler(async (req, res) => {
+const deleteVideo = asyncHandler(async (req, res) => {
     const { videoId } = req.params
 
     if (!isValidObjectId(videoId)) {
@@ -292,7 +292,7 @@ const deleteVideo = asyncHandeler(async (req, res) => {
 
 })
 
-const togglePublishStatus = asyncHandeler(async (req, res) => {
+const togglePublishStatus = asyncHandler(async (req, res) => {
     const { videoId } = req.params
 
     if (!isValidObjectId(videoId)) {
@@ -309,7 +309,7 @@ const togglePublishStatus = asyncHandeler(async (req, res) => {
         throw new ApiError(403, "you are not authorized to access this video")
     }
 
-   video.isPublished = !video.isPublished
+    video.isPublished = !video.isPublished
     await video.save()
 
     return res

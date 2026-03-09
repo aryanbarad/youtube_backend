@@ -11,7 +11,7 @@ import { upload } from "../middelware/multer.middelware.js"
 import { verifyJWT } from "../middelware/auth.middelware.js";
 
 const router = Router()
-router.route(verifyJWT)
+router.use(verifyJWT)
 
 router.route("/")
     .get(getAllVideo)

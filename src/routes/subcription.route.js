@@ -9,7 +9,7 @@ import { verifyJWT } from "../middelware/auth.middelware.js";
 
 const router = Router()
 
-router.route(verifyJWT)
+router.use(verifyJWT)
 
 router.route("c/:channelId")
     .get(getUserChannelSubscribers)

@@ -1,6 +1,6 @@
 import { ApiResponse } from "../utils/ApiResponse.js";
 import mongoose, { isValidObjectId } from "mongoose"
-import { asyncHandeler } from "../utils/asyncHandler.js";
+import {asyncHandler} from "../utils/asyncHandler.js"
 import { Video } from "../models/video.model.js"
 import { Comment } from "../models/comment.model.js";
 import { ApiError } from "../utils/ApiError.js";
@@ -8,7 +8,7 @@ import { ApiError } from "../utils/ApiError.js";
 
 
 
-const getVideoComments = asyncHandeler(async (req, res) => {
+const getVideoComments = asyncHandler(async (req, res) => {
     const { videoId } = req.params
     const { page = 1, limit = 10 } = req.query
 
@@ -97,7 +97,7 @@ const getVideoComments = asyncHandeler(async (req, res) => {
 
 
 
-const addComment = asyncHandeler(async (res, req) => {
+const addComment = asyncHandler(async (req,res) => {
     const { videoId } = req.params
     const { content } = req.body
     if (!isValidObjectId(videoId)) {
@@ -106,7 +106,7 @@ const addComment = asyncHandeler(async (res, req) => {
     const video = await Video.findById(videoId)
 
     if (!video) {
-        throw ApiError(404, "video is not found")
+        throw new ApiError(404, "video is not found")
     }
 
     if (!content || content.trim() === "") {
@@ -128,7 +128,7 @@ const addComment = asyncHandeler(async (res, req) => {
 })
 
 
-const updateComment = asyncHandeler(async (req, res) => {
+const updateComment = asyncHandler(async (req, res) => {
     const { commentId } = req.params
     const { content } = req.body
 
@@ -147,7 +147,7 @@ const updateComment = asyncHandeler(async (req, res) => {
         throw new ApiError(403, "you can only update you own comments ")
     }
 
-    if (!comment || comment.trim() === "") {
+    if (!comment || content.trim() === "") {
         throw new ApiError(400, "commnet content is required")
     }
 
@@ -170,7 +170,7 @@ const updateComment = asyncHandeler(async (req, res) => {
 })
 
 
-const deleteComment = asyncHandeler(async(req,res)=>{
+const deleteComment = asyncHandler(async(req,res)=>{
     const {commentId}= req.params
  
     if(!isValidObjectId(commentId)){
@@ -184,7 +184,7 @@ const deleteComment = asyncHandeler(async(req,res)=>{
     }
 
     //check if the user is owner
-    if(comment.owner.toString() !== res.user._id.toString()){
+    if(comment.owner.toString() !== req.user._id.toString()){
         throw new ApiError(403,"you can only delete your own comment")
     }
 
@@ -192,7 +192,7 @@ const deleteComment = asyncHandeler(async(req,res)=>{
 
     return res
     .status(200)
-    .json(200,{},"comment is successfully delete ")
+    .json(new ApiResponse(200, {}, "comment is successfully delete "))
 
 
 

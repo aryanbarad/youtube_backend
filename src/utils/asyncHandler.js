@@ -1,5 +1,5 @@
 
-const asyncHandeler = (requesHandel)=> async (req,res,next)=>{
+const asyncHandler = (requesHandel)=> async (req,res,next)=>{
    return Promise.resolve(requesHandel(req,res,next)).catch((error)=> next(error))
 }
 
@@ -8,7 +8,7 @@ const asyncHandeler = (requesHandel)=> async (req,res,next)=>{
 
 
 
-export {asyncHandeler}
+export {asyncHandler}
 
 
 // const asyncHandler = () => async (req,res,next )=>{

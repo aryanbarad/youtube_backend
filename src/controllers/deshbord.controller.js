@@ -1,5 +1,5 @@
 import mongoose from "mongoose";
-import { asyncHandeler } from "../utils/asyncHandler.js";
+import { asyncHandler } from "../utils/asyncHandler.js";
 import { Video } from "../models/video.model.js";
 import { Subscription } from "..//models/subsciption.model.js"
 import { Like } from "../models/like.model.js";
@@ -8,7 +8,7 @@ import { ApiResponse } from "../utils/ApiResponse.js";
 
 
 
-const getChannelState = asyncHandeler(async (req, res) => {
+const getChannelState = asyncHandler(async (req, res) => {
 
     const channelId = req.user._id
 
@@ -70,7 +70,7 @@ const getChannelState = asyncHandeler(async (req, res) => {
 })
 
 
-const getChannelVideos = asyncHandeler(async (req, res) => {
+const getChannelVideos = asyncHandler(async (req, res) => {
     const channelId = req.user?._id
 
     // find all videos owned by the  channel

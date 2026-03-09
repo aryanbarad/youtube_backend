@@ -3,12 +3,12 @@ import { Like } from "../models/like.model.js";
 import { Video } from "../models/video.model.js";
 import { Tweet } from "../models/tweet.model.js";
 import { Comment } from "../models/comment.model.js";
-import { asyncHandeler } from "../utils/asyncHandler.js";
+import { asyncHandler } from "../utils/asyncHandler.js";
 import { ApiResponse } from "../utils/ApiResponse.js";
 import { ApiError } from "../utils/ApiError.js";
 
 
-const ToggeleVideoLike = asyncHandeler(async(req,res)=>{
+const ToggleVideoLike = asyncHandler(async(req,res)=>{
 const {videoId} = req.params
 //validate videoId
     if(!isValidObjectId(videoId)){
@@ -47,7 +47,7 @@ const {videoId} = req.params
     }
 })
 
-const ToggeleCommentLike = asyncHandeler(async(req,res)=>{
+const ToggleCommentLike = asyncHandler(async(req,res)=>{
     const {commentId} = req.params
     //valiadate commentId
     if(!isValidObjectId(commentId)){
@@ -92,7 +92,7 @@ const ToggeleCommentLike = asyncHandeler(async(req,res)=>{
 
 
 
-const ToggleTweetLike = asyncHandeler(async(req,res)=>{
+const ToggleTweetLike = asyncHandler(async(req,res)=>{
     const {tweetId}= req.params
     
     if(!isValidObjectId(tweetId)){
@@ -135,7 +135,7 @@ const ToggleTweetLike = asyncHandeler(async(req,res)=>{
 
 })
 
-const getlikedvideo = asyncHandeler(async(req,res)=>{
+const getlikedvideo = asyncHandler(async(req,res)=>{
     const like = await Like.find({
         likedBy:req.user?._id,
         video:{$exists:true}
@@ -165,6 +165,6 @@ return res
 export {
     getlikedvideo,
     ToggleTweetLike,
-    ToggeleCommentLike,
-    ToggeleVideoLike
+    ToggleCommentLike,
+    ToggleVideoLike
 }

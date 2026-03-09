@@ -1,13 +1,13 @@
 import mongoose, { isValidObjectId } from "mongoose";
 import { Tweet } from "../models/tweet.model.js";
-import { asyncHandeler } from "../utils/asyncHandler.js";
+import { asyncHandler } from "../utils/asyncHandler.js";
 import { ApiResponse } from "../utils/ApiResponse.js";
 import { User } from "../models/user.model.js";
 import { ApiError } from "../utils/ApiError.js";
 
 
 
-const createTweet = asyncHandeler(async (req, res) => {
+const createTweet = asyncHandler(async (req, res) => {
    const userId = req.user?._id;
    const { content } = req.body
 
@@ -37,7 +37,7 @@ const createTweet = asyncHandeler(async (req, res) => {
 
 
 
-const getUserTweets = asyncHandeler(async (req, res) => {
+const getUserTweets = asyncHandler(async (req, res) => {
    const { userId } = req.params
    const { page = 1, limit = 10 } = req.query
 
@@ -93,7 +93,7 @@ const getUserTweets = asyncHandeler(async (req, res) => {
 })
 
 
-const updateTweet = asyncHandeler(async (req, res) => {
+const updateTweet = asyncHandler(async (req, res) => {
    const { tweetId } = req.params
    const { content } = req.body
    const userId = req.user?._id
@@ -129,7 +129,7 @@ const updateTweet = asyncHandeler(async (req, res) => {
 })
 
 
-const deleteTweet = asyncHandeler(async(req,res)=>{
+const deleteTweet = asyncHandler(async(req,res)=>{
    const {tweetId} = req.params
    const userId =req.user?._id
    
