@@ -1,9 +1,9 @@
 import mongoose from "mongoose";
 import { ApiError } from "../utils/ApiError.js";
-import { asyncHandeler } from "../utils/asyncHandler.js";
+import { asyncHandler } from "../utils/asyncHandler.js";
 
 
-export const checkValidateObjectId = asyncHandeler(async(req,res,next)=>{
+export const checkValidateObjectId = asyncHandler(async(req,res,next)=>{
    
    
    
