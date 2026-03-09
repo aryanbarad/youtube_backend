@@ -7,8 +7,8 @@ import {
     deleteVideo,
     togglePublishStatus
 } from "../controllers/video.controller.js"
-import { upload } from "../middelware/multer.middelware.js"
-import { verifyJWT } from "../middelware/auth.middelware.js";
+import { upload } from "../middleware/multer.middelware.js"
+import { verifyJWT } from "../middleware/auth.middelware.js";
 
 const router = Router()
 router.use(verifyJWT)

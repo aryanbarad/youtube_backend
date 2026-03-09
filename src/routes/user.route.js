@@ -12,10 +12,21 @@ import {
     getUserChannelProfile,
     getWatchHistory
 } from "../controllers/user.controller.js";
-import { upload } from "../middelware/multer.middelware.js";
-import { verifyJWT } from "../middelware/auth.middelware.js";
+import { upload } from "../middleware/multer.middelware.js";
+import { verifyJWT } from "../middleware/auth.middelware.js";
 
 const router = Router()
+
+/**
+ * @swagger
+ * /api/users/register:
+ *   post:
+ *     summary: Register new user
+ *     tags: [Users]
+ *     responses:
+ *       200:
+ *         description: User registered successfully
+ */
 
 router.route('/register').post(
     upload.fields([

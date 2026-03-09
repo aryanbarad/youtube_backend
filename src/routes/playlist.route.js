@@ -1,5 +1,5 @@
 import { Router } from "express"
-import { verifyJWT } from "../middelware/auth.middelware.js"
+import { verifyJWT } from "../middleware/auth.middelware.js"
 import {
     getUserPlayList,
     craetePlayList,
@@ -13,6 +13,13 @@ import {
 const router = Router();
 
 router.use(verifyJWT)
+/**
+ * @swagger
+ * /api/playList:
+ *   post:
+ *     summary: Create playlist
+ *     tags: [Playlist]
+ */
 
 router.route('/').post(craetePlayList)
 

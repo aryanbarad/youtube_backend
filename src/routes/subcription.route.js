@@ -4,7 +4,7 @@ import {
     toggleSubscription,
     getSubscribedChannels,
 } from "../controllers/subscription.controller.js";
-import { verifyJWT } from "../middelware/auth.middelware.js";
+import { verifyJWT } from "../middleware/auth.middelware.js";
 
 
 const router = Router()

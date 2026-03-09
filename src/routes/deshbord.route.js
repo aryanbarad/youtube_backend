@@ -2,7 +2,7 @@ import { Router } from "express";
 import {getChannelState,
     getChannelVideos}from "../controllers/deshbord.controller.js"
 
-import { verifyJWT } from "../middelware/auth.middelware.js";
+import { verifyJWT } from "../middleware/auth.middelware.js";
 import { get } from "mongoose";
 
 const router = Router()
