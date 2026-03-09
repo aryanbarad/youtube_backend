@@ -55,3 +55,6 @@ ecosystem.config.js
 
 # dotenv backups
 .env.backup
+
+.env
+public/temp
