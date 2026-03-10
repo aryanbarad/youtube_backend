@@ -24,10 +24,9 @@ const router = Router()
  *   name: Users
  *   description: User management APIs
  */
-
 /**
  * @swagger
- * /api/users/register:
+ * /api/v1/users/register:
  *   post:
  *     summary: Register a new user
  *     tags: [Users]
@@ -41,13 +40,20 @@ const router = Router()
  *               - username
  *               - email
  *               - password
+ *               - fullName
  *             properties:
+ *               fullName:
+ *                 type: string
+ *                 example: Aryan Barad
  *               username:
  *                 type: string
+ *                 example: aryan123
  *               email:
  *                 type: string
+ *                 example: aryan@gmail.com
  *               password:
  *                 type: string
+ *                 example: 12345678
  *               avatar:
  *                 type: string
  *                 format: binary
@@ -66,9 +72,13 @@ router.route('/register').post(
     registerUser
 )
 
+
+
+
+
 /**
  * @swagger
- * /api/users/login:
+ * /api/v1/users/login:
  *   post:
  *     summary: Login user
  *     tags: [Users]
@@ -78,60 +88,94 @@ router.route('/register').post(
  *         application/json:
  *           schema:
  *             type: object
+ *             required:
+ *               - email
+ *               - password
  *             properties:
  *               email:
  *                 type: string
+ *                 example: aryan@gmail.com
  *               password:
  *                 type: string
+ *                 example: 12345678
  *     responses:
  *       200:
- *         description: Login successful
+ *         description: User logged in successfully
  */
 router.route('/login').post(loginUser)
 
+
+
+
 /**
  * @swagger
- * /api/users/logout:
+ * /api/v1/users/logout:
  *   post:
- *     summary: Logout current user
+ *     summary: Logout user
  *     tags: [Users]
  *     security:
  *       - bearerAuth: []
  *     responses:
  *       200:
- *         description: Logout successful
+ *         description: User logged out successfully
  */
 router.route('/logout').post(verifyJWT, logoutUser)
 
+
+
+
+
+
 /**
  * @swagger
- * /api/users/refresh-token:
+ * /api/v1/users/refresh-token:
  *   post:
  *     summary: Refresh access token
  *     tags: [Users]
  *     responses:
  *       200:
- *         description: Token refreshed
+ *         description: Access token refreshed
  */
 router.route('/refresh-token').post(refreshAccessToken)
 
+
+
 /**
  * @swagger
- * /api/users/change-password:
+ * /api/v1/users/change-password:
  *   post:
  *     summary: Change user password
  *     tags: [Users]
  *     security:
  *       - bearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - oldPassword
+ *               - newPassword
+ *             properties:
+ *               oldPassword:
+ *                 type: string
+ *                 example: 12345678
+ *               newPassword:
+ *                 type: string
+ *                 example: 87654321
  *     responses:
  *       200:
  *         description: Password changed successfully
  */
 router.route('/change-password').post(verifyJWT, changeCurrentPassword)
 
+
+
+
 /**
  * @swagger
- * /api/users/current-user:
+ * /api/v1/users/current-user:
  *   get:
  *     summary: Get current logged in user
  *     tags: [Users]
@@ -139,33 +183,53 @@ router.route('/change-password').post(verifyJWT, changeCurrentPassword)
  *       - bearerAuth: []
  *     responses:
  *       200:
- *         description: Current user fetched
+ *         description: Current user data
  */
 router.route("/current-user").get(verifyJWT, getCurrentUser)
 
+
+
+
 /**
  * @swagger
- * /api/users/update-account:
+ * /api/v1/users/update-account:
  *   patch:
- *     summary: Update account details
+ *     summary: Update user account details
  *     tags: [Users]
  *     security:
  *       - bearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               fullname:
+ *                 type: string
+ *                 example: Aryan Barad
+ *               email:
+ *                 type: string
+ *                 example: aryan@gmail.com
  *     responses:
  *       200:
  *         description: Account updated successfully
  */
 router.route('/update-account').patch(verifyJWT, updateAccountDetails)
 
+
+
+
 /**
  * @swagger
- * /api/users/avatar:
+ * /api/v1/users/avatar:
  *   patch:
  *     summary: Update user avatar
  *     tags: [Users]
  *     security:
  *       - bearerAuth: []
  *     requestBody:
+ *       required: true
  *       content:
  *         multipart/form-data:
  *           schema:
@@ -176,7 +240,7 @@ router.route('/update-account').patch(verifyJWT, updateAccountDetails)
  *                 format: binary
  *     responses:
  *       200:
- *         description: Avatar updated
+ *         description: Avatar updated successfully
  */
 router.route("/avatar").patch(
     verifyJWT,
@@ -184,15 +248,21 @@ router.route("/avatar").patch(
     updateAvatar
 )
 
+
+
+
+
+
 /**
  * @swagger
- * /api/users/cover-image:
+ * /api/v1/users/cover-image:
  *   patch:
  *     summary: Update cover image
  *     tags: [Users]
  *     security:
  *       - bearerAuth: []
  *     requestBody:
+ *       required: true
  *       content:
  *         multipart/form-data:
  *           schema:
@@ -211,27 +281,34 @@ router.route("/cover-image").patch(
     updateUserCoverImage
 )
 
+
 /**
  * @swagger
- * /api/users/c/{username}:
+ * /api/v1/users/c/{username}:
  *   get:
  *     summary: Get user channel profile
  *     tags: [Users]
+ *     security:
+ *       - bearerAuth: []
  *     parameters:
  *       - in: path
  *         name: username
  *         required: true
  *         schema:
  *           type: string
+ *         example: aryan123
  *     responses:
  *       200:
- *         description: Channel profile fetched
+ *         description: Channel profile data
  */
 router.route("/c/:username").get(verifyJWT, getUserChannelProfile)
 
+
+
+
 /**
  * @swagger
- * /api/users/history:
+ * /api/v1/users/history:
  *   get:
  *     summary: Get watch history
  *     tags: [Users]
@@ -239,7 +316,7 @@ router.route("/c/:username").get(verifyJWT, getUserChannelProfile)
  *       - bearerAuth: []
  *     responses:
  *       200:
- *         description: Watch history fetched
+ *         description: User watch history
  */
 router.route("/history").get(verifyJWT, getWatchHistory)
 

@@ -35,11 +35,11 @@ import likeRouter from "./routes/like.route.js"
 import playlist from "./routes/playlist.route.js"
 import comment from "./routes/comment.route.js"
 
-app.use('/api/users', userRouter )
-app.use('/api/tweets',tweetRouter)
-app.use('/api/likes',likeRouter)
-app.use('/api/playList',playlist)
-app.use('/api/comment',comment)
+app.use('/api/v1/users', userRouter )
+app.use('/api/v1/tweets',tweetRouter)
+app.use('/api/v1/likes',likeRouter)
+app.use('/api/v1/playList',playlist)
+app.use('/api/v1/comment',comment)
 
 
  export default app

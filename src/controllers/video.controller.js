@@ -9,15 +9,6 @@ import mongoose, { isValidObjectId } from "mongoose";
 
 
 
-// getVideoComments - Get all comments for a specific video
-
-
-//1. Validate videoId
-// 2. Check if video exists
-//3. Fetch comments with pagination
-//4. Populate owner information
-//5. Return paginated comments
-
 const getAllVideo = asyncHandler(async (req, res) => {
     const { page = 1, limit = 10, query, sortBy, sortType, userId } = req.query
     const { videoId } = req.params

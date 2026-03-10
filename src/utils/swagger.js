@@ -9,9 +9,18 @@ const options = {
       version: "1.0.0",
       description: "API documentation for YouTube backend",
     },
+    components: {
+  securitySchemes: {
+    bearerAuth: {
+      type: "http",
+      scheme: "bearer",
+      bearerFormat: "JWT"
+    }
+  }
+},
     servers: [
       {
-        url: "http://localhost:8000",
+        url: "http://localhost:3001",
       },
     ],
   },
