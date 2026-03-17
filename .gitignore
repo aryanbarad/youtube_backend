@@ -57,4 +57,3 @@ ecosystem.config.js
 .env.backup
 
 .env
-public/temp
