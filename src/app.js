@@ -34,12 +34,14 @@ import tweetRouter from "./routes/tweet.route.js"
 import likeRouter from "./routes/like.route.js"
 import playlist from "./routes/playlist.route.js"
 import comment from "./routes/comment.route.js"
+import videoRouter from "./routes/video.route.js"
 
 app.use('/api/v1/users', userRouter )
 app.use('/api/v1/tweets',tweetRouter)
 app.use('/api/v1/likes',likeRouter)
 app.use('/api/v1/playList',playlist)
 app.use('/api/v1/comment',comment)
+app.use('/api/v1/videos',videoRouter)
 
 
  export default app
