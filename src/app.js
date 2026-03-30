@@ -35,6 +35,9 @@ import likeRouter from "./routes/like.route.js"
 import playlist from "./routes/playlist.route.js"
 import comment from "./routes/comment.route.js"
 import videoRouter from "./routes/video.route.js"
+import dashboardRouter from "./routes/deshbord.route.js"
+import healthRouter from "./routes/health.route.js"
+import subscriptionRouter from "./routes/subcription.route.js"
 
 app.use('/api/v1/users', userRouter )
 app.use('/api/v1/tweets',tweetRouter)
@@ -42,6 +45,9 @@ app.use('/api/v1/likes',likeRouter)
 app.use('/api/v1/playList',playlist)
 app.use('/api/v1/comment',comment)
 app.use('/api/v1/videos',videoRouter)
+app.use('/api/v1/dashboard',dashboardRouter)
+app.use('/api/v1/healthcheck',healthRouter)
+app.use('/api/v1/subscriptions',subscriptionRouter)
 
 
  export default app

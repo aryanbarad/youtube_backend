@@ -1,0 +1,26 @@
+Error in C:\Users\aryan94\youtube_backend\src\routes\deshbord.route.js:
+SetOptionError: async (req,res,next)=>{
+   return Promise.resolve(requesHandel(req,res,next)).catch((error)=> next(error))
+}: "async (req,res,next)=>{
+   return Promise.resolve(requesHandel(req,res,next)).catch((error)=> next(error))
+}" is not a valid option to set
+    at getsetOptions (C:\Users\aryan94\youtube_backend\node_modules\mongoose\lib\mongoose.js:258:21)
+    at file:///C:/Users/aryan94/youtube_backend/src/routes/deshbord.route.js:14:24
+    at ModuleJob.run (node:internal/modules/esm/module_job:413:25)
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at async onImport.tracePromise.__proto__ (node:internal/modules/esm/loader:660:26)
+    at async file:///C:/Users/aryan94/youtube_backend/check_imports.js:35:7
+
+---
+Error in C:\Users\aryan94\youtube_backend\src\routes\subcription.route.js:
+Error [ERR_MODULE_NOT_FOUND]: Cannot find module 'C:\Users\aryan94\youtube_backend\src\controllers\subscription.controller.js' imported from C:\Users\aryan94\youtube_backend\src\routes\subcription.route.js
+    at finalizeResolution (node:internal/modules/esm/resolve:274:11)
+    at moduleResolve (node:internal/modules/esm/resolve:864:10)
+    at defaultResolve (node:internal/modules/esm/resolve:990:11)
+    at #cachedDefaultResolve (node:internal/modules/esm/loader:718:20)
+    at #resolveAndMaybeBlockOnLoaderThread (node:internal/modules/esm/loader:735:38)
+    at ModuleLoader.resolveSync (node:internal/modules/esm/loader:764:52)
+    at #resolve (node:internal/modules/esm/loader:700:17)
+    at ModuleLoader.getOrCreateModuleJob (node:internal/modules/esm/loader:620:35)
+    at ModuleJob.syncLink (node:internal/modules/esm/module_job:143:33)
+    at ModuleJob.link (node:internal/modules/esm/module_job:228:17)
