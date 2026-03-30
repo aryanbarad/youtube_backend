@@ -128,7 +128,7 @@ router.route("/:videoId").patch(upload.single("thumbnail"), updateVideo)
 
 /**
  * @swagger
- * /api/v1/videos/toggle/publish/:{videoId}:
+ * /api/v1/videos/toggle/publish/{videoId}:
  *  patch:
  *     summary: Toggle publish status
  *     tags: [Videos]
